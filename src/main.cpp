@@ -1,31 +1,26 @@
 #include <raylib.h>   // Main raylib header: windowing, drawing, input, audio, etc.
 #include <cmath>      // For sqrtf()
+#include "../include/player.hpp"
 
 int main() {
-    // Set the size of the game window
-    const int screenWidth = 1280;
-    const int screenHeight = 720;
 
     // Create the window and give it a title
-    InitWindow(screenWidth, screenHeight, "Archer MVP");
+    InitWindow(1280, 720, "Archer MVP");
 
     // Tell raylib we want the game to try to run at 60 frames per second
     SetTargetFPS(60);
 
-    // Store the player's position in 2D space, starting in the middle of the screen
-    Vector2 player{screenWidth / 2.0f, screenHeight / 2.0f};
-
-    // How fast the player moves, in pixels per second
-    const float speed = 250.0f;
+    // Initialise player with hardcode position and speed
+    Player player;
+    Arrow arrow(player.position);
 
     // Main game loop:
     // Runs every frame until the player closes the window or presses Escape
     while (!WindowShouldClose()) {
-        // Time since last frame.
-        // Using dt makes movement frame-rate independent.
+        // Time since last frame, using dt makes movement frame-rate independent.
         float dt = GetFrameTime();
 
-        // Movement direction for this frame
+        // Reset movement direction for this frame
         Vector2 move{0.0f, 0.0f};
 
         // Read keyboard input and build a movement vector
@@ -36,24 +31,33 @@ int main() {
 
         // If moving diagonally, normalize the vector so diagonal movement
         // is not faster than horizontal/vertical movement
-        if (move.x != 0.0f || move.y != 0.0f) {
+        if (move.x != 0.0f && move.y != 0.0f) {
             float len = sqrtf(move.x * move.x + move.y * move.y);
             move.x /= len;
             move.y /= len;
         }
 
+        Vector2 mouse = GetMousePosition();
+        Vector2 dir = {mouse.x - player.position.x, mouse.y - player.position.y};
+
+        if (dir.x != 0.0f && dir.y != 0.0f) {
+            float len = sqrtf(dir.x * dir.x + dir.y * dir.y);
+            dir.x /= len;
+            dir.y /= len;
+        }
+
         // Update player position based on movement direction, speed, and frame time
-        player.x += move.x * speed * dt;
-        player.y += move.y * speed * dt;
+        player.Update(move.x, move.y, dt);
+        arrow.Update(IsMouseButtonDown(MOUSE_BUTTON_LEFT), dir, dt);
 
         // Start drawing this frame
         BeginDrawing();
-
-        // Clear the screen to black before drawing new objects
         ClearBackground(BLACK);
 
         // Draw the player as a white circle
-        DrawCircleV(player, 20.0f, RAYWHITE);
+        DrawCircleV(player.position, 20.0f, RAYWHITE);
+        DrawLineV(player.position, mouse, RED);
+        arrow.Draw();
 
         // Draw some simple instructions
         DrawText("WASD to move", 20, 20, 20, RAYWHITE);
