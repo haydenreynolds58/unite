@@ -24,6 +24,7 @@ class Arrow {
         float vel_charge = 1;
         Vector2 position;
         Vector2 velocity;
+        Vector2 deceleration;
 
         // if mouse button held && not fired
 
