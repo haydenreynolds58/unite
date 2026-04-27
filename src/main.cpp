@@ -1,6 +1,7 @@
 #include <raylib.h>   // Main raylib header: windowing, drawing, input, audio, etc.
 #include <cmath>      // For sqrtf()
 #include "../include/player.hpp"
+#include <cstdio>
 
 int main() {
 
@@ -57,7 +58,7 @@ int main() {
         // Draw the player as a white circle
         DrawCircleV(player.position, 20.0f, RAYWHITE);
         DrawLineV(player.position, mouse, RED);
-        arrow.Draw();
+        arrow.Draw(dir);
 
         // Draw some simple instructions
         DrawText("WASD to move", 20, 20, 20, RAYWHITE);

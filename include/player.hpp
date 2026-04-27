@@ -14,28 +14,15 @@ class Arrow {
     public:
         Arrow(Vector2 position);
         void Update(bool mouse_clicked, Vector2 dir, float dt);
-        void Draw();
+        void Draw(Vector2 dir);
 
     private:
         bool charging = false;
         bool flying = false;
         bool equipped = true;
-        float speed = 250;
+        float speed = 800;
         float vel_charge = 1;
         Vector2 position;
         Vector2 velocity;
         Vector2 deceleration;
-
-        // if mouse button held && not fired
-
-            // enter charge state and animation 
-            
-            // increase vel_charge to some cap 
-
-        // if mouse button not held && in charge state
-
-            // set charge to false
-            // call change position by velocity vector (direction * dt * vel_charge * speed)
-        
-
 };
