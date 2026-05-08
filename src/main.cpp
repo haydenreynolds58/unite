@@ -1,7 +1,9 @@
 #include <raylib.h>   // Main raylib header: windowing, drawing, input, audio, etc.
 #include <cmath>      // For sqrtf()
-#include "../include/player.hpp"
 #include <cstdio>
+
+#include "player.hpp"
+#include "arrow.hpp"
 
 int main() {
 
