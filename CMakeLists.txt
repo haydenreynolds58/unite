@@ -9,6 +9,7 @@ find_package(raylib REQUIRED)
 add_executable(unite
     src/main.cpp
     src/player.cpp
+    src/arrow.cpp
 )
 
 target_include_directories(unite PRIVATE include)
