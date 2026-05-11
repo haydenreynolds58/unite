@@ -1,12 +1,24 @@
 #include "player.hpp"
 
-Vector2 Player::position = {500, 700};
+void Player::SetMoveInput(Vector2 input) {
+    moveInput = input;
+}
 
-Player::Player(){
-    speed = 250.0f;
-};
+void Player::SetAimTarget(Vector2 target) {
+    aimTarget = target;
+}
 
-void Player::Update(float x_inc, float y_inc, float dt){
-    position.x += x_inc * speed * dt;
-    position.y += y_inc * speed * dt;
-};
+Vector2 Player::GetPosition() const {
+    return position;
+}
+
+void Player::Update(float dt) {
+    position.x += moveInput.x * speed * dt;
+    position.y += moveInput.y * speed * dt;
+}
+
+void Player::Draw() const {
+    DrawCircleV(position, 20.0f, BLUE);
+
+    DrawLineV(position, aimTarget, RED);
+}

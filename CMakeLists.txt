@@ -10,6 +10,8 @@ add_executable(unite
     src/main.cpp
     src/player.cpp
     src/arrow.cpp
+    src/input_manager.cpp
+    src/game.cpp
 )
 
 target_include_directories(unite PRIVATE include)

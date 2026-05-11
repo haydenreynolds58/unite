@@ -1,74 +1,109 @@
 #include "arrow.hpp"
-#include "player.hpp"
 #include "vector_math.hpp"
-#include <cstdio>
 
-Arrow::Arrow(Vector2 position){
-    this -> position = position;
+#include <algorithm>
+#include <cmath>
+
+Arrow::Arrow(Vector2 startPosition) {
+    position = startPosition;
 }
 
-void Arrow::Update(bool mouse_clicked, Vector2 dir, float dt){
-    if(equipped){
-        position = Player::position;
-        if(!charging){
-            vel_charge = 1; 
-        };
-    };
+void Arrow::Update(
+    bool mouseHeld,
+    Vector2 direction,
+    Vector2 playerPosition,
+    float dt
+) {
+    if (equipped) {
+        position = playerPosition;
 
-    if(mouse_clicked && equipped){
+        if (!charging) {
+            velocityCharge = 1.0f;
+        }
+    }
+
+    if (mouseHeld && equipped) {
         charging = true;
-        vel_charge = std::min(vel_charge + 0.05f, 1.775f);
-        
-        printf("vel charge: %f\n", vel_charge);
-    } 
 
-    // transition from charging to flying
-    else if(!mouse_clicked && charging){
+        velocityCharge = std::min(
+            velocityCharge + chargeRate * dt,
+            maxVelocityCharge
+        );
+
+    }
+    else if (!mouseHeld && charging) {
         charging = false;
         flying = true;
         equipped = false;
-        printf("RELEASES: vel charge: %f\n", vel_charge);
 
-        velocity = Vec::Scale(dir, speed * vel_charge);
-        deceleration = dir;
+        velocity = Vec::Scale(direction, speed * velocityCharge);
+        decelerationDirection = direction;
+        oldVelocity = velocity;
     }
-
-    else if(flying){
-        if(position.x >= GetScreenWidth() || position.x <= 0){
+    else if (flying) {
+        if (position.x >= GetScreenWidth() || position.x <= 0.0f) {
             velocity.x = -velocity.x;
-            deceleration.x = -deceleration.x;
+            decelerationDirection.x = -decelerationDirection.x;
         }
-        if(position.y >= GetScreenHeight() || position.y <= 0){
+
+        if (position.y >= GetScreenHeight() || position.y <= 0.0f) {
             velocity.y = -velocity.y;
-            deceleration.y = -deceleration.y;
+            decelerationDirection.y = -decelerationDirection.y;
         }
 
-        velocity = Vec::ApproachZero(velocity, Vec::Scale(deceleration, speed * 0.05f));
-        position = Vec::Add(position, velocity * dt);
+        velocity = Vec::ApproachZero(
+            velocity,
+            Vec::Scale(decelerationDirection, speed * decelerationAmount)
+        );
 
+        position = Vec::Add(position, Vec::Scale(velocity, dt));
 
-        if(!velocity.x && !velocity.y){
+        if (velocity.x != 0.0f || velocity.y != 0.0f) {
+            oldVelocity = velocity;
+        }
+
+        if (velocity.x == 0.0f && velocity.y == 0.0f) {
             flying = false;
             equipped = true;
-        };
-    };
+        }
+    }
 }
 
-void Arrow::Draw(Vector2 dir){
-    Rectangle arrow{position.x, position.y, 10.0f, 22.0f};
-    Vector2 old_vel; // store velocity for rotation before decelerated to zero
-    Vector2 origin = {0.0f, 0.0f};
-    if(equipped){
-        DrawRectanglePro(arrow, origin, -90 + (atan2f(dir.y, dir.x) * RAD2DEG), RED);
-    }
-
-    if(flying){
-        DrawRectanglePro(arrow, origin, -90 + (atan2f(velocity.y, velocity.x) * RAD2DEG), RED);
-
-        Vector2 old_vel = velocity;
-    }
-
-    else if (!flying && !equipped){
-        DrawRectanglePro(arrow, origin, -90 + (atan2f(old_vel.y, old_vel.x) * RAD2DEG), RED);
+void Arrow::Draw(Vector2 aimDirection) const {
+    Rectangle arrowRect{
+        position.x,
+        position.y,
+        10.0f,
+        22.0f
     };
+
+    Vector2 origin{
+        arrowRect.width / 2.0f,
+        arrowRect.height / 2.0f
+    };
+
+    if (equipped) {
+        DrawRectanglePro(
+            arrowRect,
+            origin,
+            -90.0f + atan2f(aimDirection.y, aimDirection.x) * RAD2DEG,
+            RED
+        );
+    }
+    else if (flying) {
+        DrawRectanglePro(
+            arrowRect,
+            origin,
+            -90.0f + atan2f(velocity.y, velocity.x) * RAD2DEG,
+            RED
+        );
+    }
+    else {
+        DrawRectanglePro(
+            arrowRect,
+            origin,
+            -90.0f + atan2f(oldVelocity.y, oldVelocity.x) * RAD2DEG,
+            RED
+        );
+    }
 }
