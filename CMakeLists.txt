@@ -1,18 +1,21 @@
-cmake_minimum_required(VERSION 3.16)
-project(unite LANGUAGES CXX)
-
+cmake_minimum_required(VERSION 3.20)
+project(unite LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-find_package(raylib REQUIRED)
-
-add_executable(unite
-    src/main.cpp
-    src/player.cpp
-    src/arrow.cpp
-    src/input_manager.cpp
-    src/game.cpp
-)
-
+include(FetchContent)
+option(UNITE_FETCH_RAYLIB "Download raylib when no installed package is found" ON)
+find_package(raylib QUIET)
+if(NOT raylib_FOUND)
+    if(NOT UNITE_FETCH_RAYLIB)
+        message(FATAL_ERROR "Install raylib or enable UNITE_FETCH_RAYLIB")
+    endif()
+    set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+    FetchContent_Declare(raylib GIT_REPOSITORY https://github.com/raysan5/raylib.git GIT_TAG 5.5)
+    FetchContent_MakeAvailable(raylib)
+endif()
+# Preserve the original archer prototype as its own executable.
+add_executable(unite src/main.cpp src/player.cpp src/arrow.cpp src/input_manager.cpp src/game.cpp)
 target_include_directories(unite PRIVATE include)
 target_link_libraries(unite PRIVATE raylib)
+include(CTest)
+add_subdirectory(boss)

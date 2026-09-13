@@ -12,9 +12,9 @@ public:
     void Draw() const;
 
 private:
-    Vector2 position{640.0f, 360.0f};
-    Vector2 moveInput{0.0f, 0.0f};
-    Vector2 aimTarget{640.0f, 360.0f};
+    Vector2 m_position{640.0f, 360.0f};
+    Vector2 m_moveInput{0.0f, 0.0f};
+    Vector2 m_aimTarget{640.0f, 360.0f};
 
     float speed = 250.0f;
 };

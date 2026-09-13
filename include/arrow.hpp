@@ -16,7 +16,7 @@ public:
     void Draw(Vector2 aimDirection) const;
 
 private:
-    Vector2 position{0.0f, 0.0f};
+    Vector2 m_position{0.0f, 0.0f};
     Vector2 velocity{0.0f, 0.0f};
     Vector2 decelerationDirection{0.0f, 0.0f};
 
@@ -27,7 +27,7 @@ private:
     bool charging = false;
     bool flying = false;
 
-    float speed = 500.0f;
+    float speed = 1000.0f;
     float velocityCharge = 1.0f;
     float maxVelocityCharge = 1.775f;
     float chargeRate = 0.75f;

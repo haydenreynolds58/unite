@@ -11,8 +11,8 @@ public:
     bool IsShootHeld() const;
 
 private:
-    Vector2 moveInput{0.0f, 0.0f};
-    Vector2 mousePosition{0.0f, 0.0f};
+    Vector2 m_moveInput{0.0f, 0.0f};
+    Vector2 m_mousePosition{0.0f, 0.0f};
 
-    bool shootHeld = false;
+    bool m_shootHeld = false;
 };

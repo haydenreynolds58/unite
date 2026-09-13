@@ -67,11 +67,11 @@ void Game::Draw() const {
 
 Vector2 Game::CalculateAimDirection() const {
     Vector2 playerPosition = player.GetPosition();
-    Vector2 mousePosition = input.GetMousePosition();
+    Vector2 m_mousePosition = input.GetMousePosition();
 
     Vector2 direction{
-        mousePosition.x - playerPosition.x,
-        mousePosition.y - playerPosition.y
+        m_mousePosition.x - playerPosition.x,
+        m_mousePosition.y - playerPosition.y
     };
 
     return NormalizeOrDefault(direction, {1.0f, 0.0f});

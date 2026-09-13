@@ -15,28 +15,28 @@ static Vector2 NormalizeOrZero(Vector2 v) {
 }
 
 void InputManager:: Update() {
-    moveInput = {0.0f, 0.0f};
+    m_moveInput = {0.0f, 0.0f};
 
-    if (IsKeyDown(KEY_W)) moveInput.y -= 1.0f;
-    if (IsKeyDown(KEY_S)) moveInput.y += 1.0f;
-    if (IsKeyDown(KEY_A)) moveInput.x -= 1.0f;
-    if (IsKeyDown(KEY_D)) moveInput.x += 1.0f;
+    if (IsKeyDown(KEY_W)) m_moveInput.y -= 1.0f;
+    if (IsKeyDown(KEY_S)) m_moveInput.y += 1.0f;
+    if (IsKeyDown(KEY_A)) m_moveInput.x -= 1.0f;
+    if (IsKeyDown(KEY_D)) m_moveInput.x += 1.0f;
 
-    moveInput = NormalizeOrZero(moveInput);
+    m_moveInput = NormalizeOrZero(m_moveInput);
 
-    mousePosition = ::GetMousePosition();
+    m_mousePosition = ::GetMousePosition();
 
-    shootHeld = IsMouseButtonDown(MOUSE_BUTTON_LEFT);
+    m_shootHeld = IsMouseButtonDown(MOUSE_BUTTON_LEFT);
 }
 
 Vector2 InputManager::GetMoveInput() const {
-    return moveInput;
+    return m_moveInput;
 }
 
 Vector2 InputManager::GetMousePosition() const {
-    return mousePosition;
+    return m_mousePosition;
 }
 
 bool InputManager::IsShootHeld() const {
-    return shootHeld;
+    return m_shootHeld;
 }

@@ -5,7 +5,7 @@
 #include <cmath>
 
 Arrow::Arrow(Vector2 startPosition) {
-    position = startPosition;
+    m_position = startPosition;
 }
 
 void Arrow::Update(
@@ -15,7 +15,7 @@ void Arrow::Update(
     float dt
 ) {
     if (equipped) {
-        position = playerPosition;
+        m_position = playerPosition;
 
         if (!charging) {
             velocityCharge = 1.0f;
@@ -41,12 +41,12 @@ void Arrow::Update(
         oldVelocity = velocity;
     }
     else if (flying) {
-        if (position.x >= GetScreenWidth() || position.x <= 0.0f) {
+        if (m_position.x >= GetScreenWidth() || m_position.x <= 0.0f) {
             velocity.x = -velocity.x;
             decelerationDirection.x = -decelerationDirection.x;
         }
 
-        if (position.y >= GetScreenHeight() || position.y <= 0.0f) {
+        if (m_position.y >= GetScreenHeight() || m_position.y <= 0.0f) {
             velocity.y = -velocity.y;
             decelerationDirection.y = -decelerationDirection.y;
         }
@@ -56,7 +56,7 @@ void Arrow::Update(
             Vec::Scale(decelerationDirection, speed * decelerationAmount)
         );
 
-        position = Vec::Add(position, Vec::Scale(velocity, dt));
+        m_position = Vec::Add(m_position, Vec::Scale(velocity, dt));
 
         if (velocity.x != 0.0f || velocity.y != 0.0f) {
             oldVelocity = velocity;
@@ -71,8 +71,8 @@ void Arrow::Update(
 
 void Arrow::Draw(Vector2 aimDirection) const {
     Rectangle arrowRect{
-        position.x,
-        position.y,
+        m_position.x,
+        m_position.y,
         10.0f,
         22.0f
     };
